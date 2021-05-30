@@ -15,8 +15,8 @@ test.entity by Notex link: https://github.com/Notexe/test.entity
 Installation:
 	1. Extract the contents of the zip file
 	2. Install nodejs if it isn't installed already: https://nodejs.org/en/download/
-	3. Install RPKG Tool if it isn't already: https://notex.app/rpkg/](https://notex.app/rpkg/
-	4. Install ResourceTool if it isn't already: https://github.com/OrfeasZ/ZHMTools/](https://github.com/OrfeasZ/ZHMTools/
+	3. Install RPKG Tool if it isn't already: https://notex.app/rpkg
+	4. Install ResourceTool if it isn't already: https://github.com/OrfeasZ/ZHMTools/
 	5. Copy rpkg-cli.exe and ResourceTool.exe (along with all of it's dlls) into .../map_generator/test.entity-main/
 	6. Change the contents of .../map_generator/output_path.txt to where the rpkg file should generate (ex. D:\EpicGames\HITMAN3\Runtime\chunk1patch2.rpkg)
 	7. Follow the "Launching the map" directions from the readme in test.entity
@@ -40,10 +40,10 @@ Notes for Blender:
 	
 CREDIT:
 	- ZHMTools by NoFaTe
-		link: https://github.com/OrfeasZ/ZHMTools/](https://github.com/OrfeasZ/ZHMTools/
+		link: https://github.com/OrfeasZ/ZHMTools/
 	- RPKG Tool by [REDACTED]
 		link: https://www.notex.app/rpkg
 	- test.entity by Notex
-		link: https://www.notex.app/rpkg
+		link: https://github.com/Notexe/test.entity
 	- Notex.app by Notex
 		link: https://www.notex.app
