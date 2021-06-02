@@ -39,6 +39,7 @@ What the Blender Addon Does:
 	
 Notes for Blender:
 	- The properties in the Glacier2 section all have tooltips to give extra help
+	- If you use an entity type that is not in either chunk0 or chunk1 you need to add all of it's depends to the rpkg yourself
 	- If you have a single entity with a visual for the editor that requires several objects, you can make all of the visual
 		parts children of an empty object that has the, "Export this entity" property unchecked. This is how both building_background_d
 		and inflatable_crocodile_a001 work.
