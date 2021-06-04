@@ -1,6 +1,7 @@
 // Andrew Pratt 2021
 
 const fs = require("fs");
+const process = require("process");
 const child_process = require("child_process");
 
 
@@ -210,9 +211,57 @@ function getFileHash(pathRpkgCli, name)
 }
 
 
+// Create the string for a single Glacier2 entity property
+//	property (object): Property from the blender json file
+// Returns: Property as a string
+function getPropStr(property)
+{	
+	// TODO: Probably shouldn't need to force quotes for strings like this
+	return '{'
+		+ (
+			(typeof property.i) == "string"
+			? `"nPropertyID":"${property.i}",`
+			: `"nPropertyID":${property.i},`
+		)
+		+ `"value":`
+		+ '{'
+			+ `"\$type":"${property.t}",`
+			+ (
+				(typeof property.v) == "string"
+				? `"\$val":"${property.v}"`
+				: `"\$val":${JSON.stringify(property.v)}`
+			)
+		+ '}'
+	+ '}';
+}
+
+// Create the string for an array of Glacier2 entity properties
+//	properties (object[]): Array of properties from the blender json file
+//	bBrackets (bool): When true, will add opening and closing square brackets to output string. Ignored if bCommaPrefix is true.
+//	bCommaPrefix (bool): When true, will add a comma to the beginning of the string
+// Returns: Properties as a string
+function getPropArrStr(properties, bBrackets, bCommaPrefix)
+{
+	// Declare a variable to hold the output string
+	var outStr = "";
+	
+	// Stringify and concatenate each property
+	for (const [i, property] of Object.entries(properties))
+	{
+		if (bCommaPrefix || i > 0) outStr += ',';
+		outStr += getPropStr(property);
+	}
+	
+	// Return the string, adding brackets if needed
+	if (!bCommaPrefix && bBrackets)
+		return '[' + outStr + ']';
+	return outStr;
+}
+
+
 // Create the string for a subentity to be added to a .TEMP.json file
 //	obj (object): An entry from the blender json file
-// tempMeta (object): The temp json's corresponding .meta.JSON as an object
+//	tempMeta (object): The temp json's corresponding .meta.JSON as an object
 // Returns: Subentity as a string
 function getTempEntStr(obj, tempMeta)
 {
@@ -254,6 +303,8 @@ function getTempEntStr(obj, tempMeta)
 				
 				: '' // <- Else
 			)
+			// Other properties from Blender
+			+ getPropArrStr(obj.props, false, true)
 		+ "],"
 		// Post-init properties
 		+ `"postInitPropertyValues":`
@@ -270,6 +321,8 @@ function getTempEntStr(obj, tempMeta)
 					+ '}'
 				+ '}'
 			+ '}'
+			// Other post-init properties from Blender
+			+ getPropArrStr(obj.piprops, false, true)
 		+ "],"
 		// Platform-specific properties
 		+ `"platformSpecificPropertyValues":[]`
@@ -300,26 +353,38 @@ function getTbluEntStr(obj, tbluMeta)
 }
 
 
-
-function main()
+// Print the cmd syntax for this script
+function printSyntax()
 {
+	console.log("HM3MapGenerator syntax: node gen.js <path to config json>");
+	console.log("  Example: node C:/Users/JohnDoe/Documents/HM3MapGenerator/js/gen.js C:/Users/JohnDoe/Documents/HM3MapGenerator/config.json");
+}
+
+
+
+function main(argv)
+{
+	// Make sure the right amount of cmd line args were given
+	if (argv.length != 3)
+	{
+		printSyntax();
+		return;
+	}
+	
 	// Declare constants
-	const HASH_TEMP = "00E63B961C72ADFF";
-	const HASH_TBLU = "002358C35FE1FD13";
-	
+	const PATH_JSON_CONFIG = argv[2];
 	const PATH_BLEND_DATA = __dirname + "/../blend/map.json";
-	const PATH_TXT_OUTPUT = __dirname + "/../output_path.txt";
-	const PATH_EXE_RESTOOL = __dirname + "/../test.entity-main/ResourceTool.exe";
-	const PATH_EXE_RPKG_CLI = __dirname + "/../test.entity-main/rpkg-cli.exe";
 	
+	// Load the config file
+	var configJson = loadJsonIfExists(PATH_JSON_CONFIG, "Failed to load config file at " + PATH_JSON_CONFIG);
 	
 	// Declare vars to hold output
 	var tempOut = "";
 	var tbluOut = "";
 	
 	// Load .meta.JSON files
-	var tempMeta = loadMetaJsonIfExists(PATH_EXE_RPKG_CLI, __dirname + "/../og_json/" + HASH_TEMP + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + HASH_TEMP + ".TEMP.meta.JSON does not exist");
-	var tbluMeta = loadMetaJsonIfExists(PATH_EXE_RPKG_CLI, __dirname + "/../og_json/" + HASH_TBLU + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + HASH_TBLU + ".TBLU.meta.JSON does not exist");
+	var tempMeta = loadMetaJsonIfExists(configJson.path_rpkg_cli, __dirname + "/../og_json/" + configJson.hashTemp + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + configJson.hashTemp + ".TEMP.meta.JSON does not exist");
+	var tbluMeta = loadMetaJsonIfExists(configJson.path_rpkg_cli, __dirname + "/../og_json/" + configJson.hashTblu + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + configJson.hashTblu + ".TBLU.meta.JSON does not exist");
 
 	
 	// Open blender json file
@@ -334,19 +399,19 @@ function main()
 	}
 	
 	// Insert the output into the map's original json files and save as new json files
-	insertNewDataIntoJson(HASH_TEMP, "TEMP", tempOut);
-	insertNewDataIntoJson(HASH_TBLU, "TBLU", tbluOut);
+	insertNewDataIntoJson(configJson.hashTemp, "TEMP", tempOut);
+	insertNewDataIntoJson(configJson.hashTblu, "TBLU", tbluOut);
 	
 	// Save the new .meta.JSON files
-	saveNewMetaJson(HASH_TEMP, "TEMP", tempMeta);
-	saveNewMetaJson(HASH_TBLU, "TBLU", tbluMeta);
+	saveNewMetaJson(configJson.hashTemp, "TEMP", tempMeta);
+	saveNewMetaJson(configJson.hashTblu, "TBLU", tbluMeta);
 	
 	// Serialize the json we just made into the files for a brick
-	brickToBIN1(PATH_EXE_RESTOOL, PATH_EXE_RPKG_CLI, HASH_TEMP, HASH_TBLU);
+	brickToBIN1(configJson.path_ResourceTool + "/ResourceTool.exe", configJson.path_rpkg_cli, configJson.hashTemp, configJson.hashTblu);
 	
 	// Generate an rpkg file via rpkg-cli
 	child_process.execFileSync(
-		PATH_EXE_RPKG_CLI,
+		configJson.path_rpkg_cli,
 		[
 			// Path to directory to generate rpkg from
 			"-generate_rpkg_from",
@@ -361,8 +426,8 @@ function main()
 	fs.copyFileSync(
 		// Path to file to copy; the rpkg file
 		__dirname + "/test.entity.rpkg",
-		// Path to copy file to; the contents of output_path.txt
-		loadIfExists(PATH_TXT_OUTPUT, "output_path.txt is missing! Put it back :(")
+		// Path to copy file to
+		configJson.path_Runtime + '/' + configJson.rpkgName
 	);
 	
 	// Delete the first copy of the rpkg file, it's not needed anymore
@@ -374,7 +439,7 @@ function main()
 
 try
 {
-	main();
+	main(process.argv);
 }
 catch (e)
 {
