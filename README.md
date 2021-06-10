@@ -74,7 +74,7 @@ EXAMPLE (string): "002358C35FE1FD13"
 	
 ***
 	
-CREDIT:
+## CREDIT:
 - ZHMTools by NoFaTe
 	link: https://github.com/OrfeasZ/ZHMTools/
 - RPKG Tool by [REDACTED]
