@@ -8,7 +8,8 @@ import abc;
 bl_info = {
     "name": "HM3MapGenerator",
     "author": "Andrew Pratt",
-    "version": (0, 0, 2),
+    "version": (0, 0, 3),
+    # This addon was tested in version 2.93.0
     "blender": (2, 92, 0),
     "category": "Interface",
 }
@@ -22,8 +23,6 @@ class HM3MapGenerator_Export(bpy.types.Operator):
     bl_idname = "wm.hm3mapgenerator_export";
     # Display Name
     bl_label = "Export Hitman Map Data";
-    # Options
-    #bl_options = {"REGISTER"};
     
     # Returns a Glacier2 property formatted to json
     @staticmethod
@@ -66,6 +65,7 @@ class HM3MapGenerator_Export(bpy.types.Operator):
             + r'"z":{},'
             + r'"t":{},'
             + r'"s":{},'
+            + r'"pparent":"{}",'
             + r'"tempType":"{}",'
             + r'"tempFlag":"{}",'
             + r'"tbluType":"{}",'
@@ -91,11 +91,12 @@ class HM3MapGenerator_Export(bpy.types.Operator):
         # Iterate over scene objects
         i = -1;
         for obj in objs:
-            i += 1;
-            
             # Skip this object if it shouldn't be exported
             if (not obj.HM3MapGenerator_bExport):
                 continue;
+            
+            # Increment index var
+            i += 1;
             
             # Add a comma after the previous json object, if there was one
             if (i > 0):
@@ -107,9 +108,11 @@ class HM3MapGenerator_Export(bpy.types.Operator):
             obj.scale = (1.0, 1.0, 1.0);
             bpy.context.view_layer.update();
             # Get object transform (with unit scaling)
-            objT = obj.matrix_world;
+            objT = obj.matrix_basis;
             # Calculate z position offset
-            zOffset = 1.52;
+            # TODO: Don't assume object origin is centered
+            #zOffset = 3.5;
+            zOffset = 0.0;
             if (not obj.HM3MapGenerator_bIsPointEnt):
                 zOffset -= objScale.z;
             # Get object scale to export
@@ -120,6 +123,10 @@ class HM3MapGenerator_Export(bpy.types.Operator):
                     objScale.y / obj.HM3MapGenerator_baseScale.y,
                     objScale.z / obj.HM3MapGenerator_baseScale.z
                 )
+            # Get parent name to export
+            parentName = "";
+            if (not (obj.parent is None)):
+                parentName = obj.parent.name;
             
             #Append object
             oFile.write(
@@ -138,6 +145,9 @@ class HM3MapGenerator_Export(bpy.types.Operator):
                     
                     # Scale
                     objScaleOutStr,
+                    
+                    # Physical parent
+                    parentName,
                     
                     # Entity type & flags
                     obj.HM3MapGenerator_tempType,
@@ -576,7 +586,10 @@ def register():
 def unregister():
     # Unregister classes
     for cls in reversed(classes):
-        bpy.utils.unregister_class(OBJECT_PT_glacier2);
+        bpy.utils.unregister_class(cls);
+    
+    # Unregister menu items
+    bpy.types.TOPBAR_MT_edit.remove(onClickExport);
     
     # Unregister properties
     del bpy.types.Object.HM3MapGenerator_bExport;

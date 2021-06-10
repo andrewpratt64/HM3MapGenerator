@@ -5,5 +5,9 @@
 	
 	"rpkgName": "chunk1patch2.rpkg",
 	"hashTemp": "00E63B961C72ADFF",
-	"hashTblu": "002358C35FE1FD13"
+	"hashTblu": "002358C35FE1FD13",
+	
+	
+	"defaultLogicalParentIndex": 3,
+	"defaultPhysicalParentIndex": 1
 }

@@ -5,14 +5,14 @@ Map generator for HM3
 
 THIS IS A VERY EARLY VERSION!
 
-License info in LICENSE.txt and in external_licenses folder
+License information is in LICENSE.txt and in external_licenses folder
 test.entity by Notex link: https://github.com/Notexe/test.entity
-Info on installing Blender addons: https://docs.blender.org/manual/en/latest/editors/preferences/addons.html
+Information on installing Blender addons: https://docs.blender.org/manual/en/latest/editors/preferences/addons.html
 
-WARNING:
-	I have noticed crashes in rare cases, most likely when the npc is alerted.
-	Hopefully I will have a fix for this in the near future.
 
+NOTE FOR MOST RECENT UPDATE:
+	In the files in the "og_json" directory, many entities from the original test.entity have "DISABLED_" prepended to their name, their types set to
+	zentity, and their non-essential properties removed. This is just a placeholder for until property types that refer to other entities is supported.
 
 
 Installation:
@@ -39,32 +39,38 @@ What the Blender Addon Does:
 	
 Notes for Blender:
 	- The properties in the Glacier2 section all have tooltips to give extra help
-	- If you use an entity type that is not in either chunk0 or chunk1 you need to add all of it's depends to the rpkg yourself
+	- If you use an entity type that is not in either chunk0 or chunk1 you need to add all of it's direct depends to the rpkg yourself
 	- If you have a single entity with a visual for the editor that requires several objects, you can make all of the visual
 		parts children of an empty object, making sure each child object has the, "Export this entity" property unchecked. This is how both building_background_d
-		and inflatable_crocodile_a001 work.
-	- Don't change the pivot point on any objects that are being exported
-	- All objects are moved up by 1.52 meters so that z=0 in blender aligns with the floor in the test.entity map
+		and inflatable_crocodile_a001 work. Other objects, such as the gas canisters and the seaplane, had their mesh edited manually to fit a single object in Blender.
+		Any mesh can be used to represent the entity however. For example, the "facility_arena_ground_a_00" is just a primitive cylinder scaled to roughly fit
+		the size of the object it represents. This process will hopefully be automated in the future.
+	- Don't change the pivot point on any objects that are being exported (...unless you know what you're doing)
+	- When setting the TEMP type or the TBLU type on an object, it must be a filehash (ex. 00B4A45F11887CE0)
 	
 	
 Config settings:
-	-"path_Runtime": Path to the Hitman 3 Runtime folder
+	-"path_Runtime" (string): Path to the Hitman 3 Runtime folder
 		EXAMPLE: "D:/EpicGames/HITMAN3/Runtime"
 		
 	-"path_rpkg_cli": Path to rpkg-cli.exe
-		EXAMPLE: "D:/Dev/hitman3/rpkg/rpkg-cli.exe"
+		EXAMPLE (string): "D:/Dev/hitman3/rpkg/rpkg-cli.exe"
 		
 	-"path_ResourceTool": Path to the folder containing the ResourceTool executable and ResourceLib
-		EXAMPLE: "D:/Dev/hitman3/rpkg/ResourceTool"
+		EXAMPLE (string): "D:/Dev/hitman3/rpkg/ResourceTool"
 		
 	-"rpkgName": Name of the rpkg file to generate
-		EXAMPLE: "chunk1patch2.rpkg"
+		EXAMPLE (string): "chunk1patch2.rpkg"
 		
 	-"hashTemp": Hash for the map's .TEMP file
-		EXAMPLE: "00E63B961C72ADFF"
+		EXAMPLE (string): "00E63B961C72ADFF"
 		
 	-"hashTblu": Hash for the map's .TBLU file
-		EXAMPLE: "002358C35FE1FD13"
+		EXAMPLE (string): "002358C35FE1FD13"
+		
+	-"defaultLogicalParentIndex" (int): Default value for each entity's logical parent entity index
+	
+	-"defaultPhysicalParentIndex" (int): Default value for each entity's physical parent entity index
 	
 	
 CREDIT:
@@ -76,3 +82,5 @@ CREDIT:
 		link: https://github.com/Notexe/test.entity
 	- Notex.app by Notex
 		link: https://www.notex.app
+	- Everyone's help on the Glacier2 Modding Discord server
+		link: https://discord.com/invite/hxPT9rf

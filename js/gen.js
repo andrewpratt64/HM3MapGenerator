@@ -57,8 +57,10 @@ function loadMetaJsonIfExists(pathRpkgCli, pathFile, errMsg)
 // Inserts the new generated data string into an existing json file and saves it
 //	hash (string): Hash code of file
 //	type (string): Type of file (ex. "TEMP", "TBLU", etc.)
-//	str (string): String to insert into json file
-function insertNewDataIntoJson(hash, type, str)
+//	oldStr (string): Contents of original json file
+//	newStr (string): String to insert into json file
+//	insertIndex (int): The index in oldStr to insert newStr
+function insertNewDataIntoJson(hash, type, oldStr, newStr, insertIndex)
 {
 	// Save the new file
 	fs.writeFileSync(
@@ -67,17 +69,11 @@ function insertNewDataIntoJson(hash, type, str)
 		
 		// File contents
 		// (The original file data that preceeds the insertion point...)
-		loadIfExists(
-			__dirname + "/../og_json/pre_" + hash + '.' + type + ".JSON.txt",
-			"Missing original json file part: pre_" + hash + '.' + type + ".JSON.txt"
-		)
+		oldStr.substring(0, insertIndex)
 		// (...plus the new string data...)
-		+ str
+		+ newStr
 		// (...plus the original file data that proceeds the insertion point)
-		+ loadIfExists(
-			__dirname + "/../og_json/post_" + hash + '.' + type + ".JSON.txt",
-			"Missing original json file part: post_" + hash + '.' + type + ".JSON.txt"
-		),
+		+ oldStr.substring(insertIndex),
 		
 		// File options
 		{encoding: "utf8"}
@@ -211,6 +207,89 @@ function getFileHash(pathRpkgCli, name)
 }
 
 
+// Gets the key of an object with a given name from blender json
+//	blendJson (object): Blender json object to get object from
+//	name (string): Name of object to get
+// Returns: Key of object with matching name, or -1 if no object was found
+function getKeyFromBlenderName(blendJson, name)
+{
+	//return blendJson.findIndex((obj) => obj.name == name);
+	
+	// Iterate over all objects
+	for (var [i, obj] of Object.entries(blendJson))
+	{
+		// Return the key of the current object if it's name is what we're looking for
+		if (obj.name == name)
+			return i;
+	}
+	
+	// If no object matched, return -1
+	return -1;
+}
+
+// Same as above, but ensures the returned value is a number
+function getNumericKeyFromBlenderName(blendJson, name)
+{
+	var key = getKeyFromBlenderName(blendJson, name);
+	if (typeof key == "number")
+		return key;
+	return parseInt(key);
+}
+
+
+// Gets the entity index of an objects physical parent
+//	blendJson (object): Blender json to get object from
+//	obj (object): The child object from the blender json file
+//	config (object): Generator configuration
+// Returns: Index of object's parent as a number
+function getPhysicalParentIndexFromBlenderName(blendJson, obj, config)
+{	
+	// If the object has no parent, return the default value
+	if (obj.pparent == "")
+		return config.defaultPhysicalParentIndex;
+	
+	// Otherwise, attempt to find the index of the object's parent
+	var parentKey = getNumericKeyFromBlenderName(blendJson, obj.pparent);
+	
+	// If the parent wasn't found, print a warning and return the default value
+	if (parentKey == -1)
+	{
+		console.log(`WARNING: In Blender object "${obj.name}", failed to find parent "${obj.pparent}"`);
+		return config.defaultPhysicalParentIndex;
+	}
+	
+	// If the parent was found, return it's index
+	return parentKey + config.subentCount;
+}
+
+
+// Get the index in the contents of the temp json file where new entities should be inserted
+//	tempStr (string): Contents of the original .TEMP.json as a string
+// Returns: Index to insert new data as an integer, or -1 if the temp string is invalid
+function getTempInsertionIndex(tempStr)
+{
+	return tempStr.search(/\],\s*"propertyOverrides(?:.|\s)+\}\s*$/g);
+}
+
+// Get the index in the contents of the tblu json file where new entities should be inserted
+//	tbluStr (string): Contents of the original .TBLU.json as a string
+// Returns: Index to insert new data as an integer, or -1 if the tblu string is invalid
+function getTbluInsertionIndex(tbluStr)
+{
+	return tbluStr.search(/\],\s*"externalSceneTypeIndicesInResourceHeader(?:.|\s)+\}\s*$/g);
+}
+
+
+// Get the number of subentities in a temp json
+//	jsonStr (string): Contents of either the original .TEMP.json or the original .TBLU.json as a string
+// Returns: Number of entities as an integer
+function getSubentCount(jsonStr)
+{
+	// Serialize the json string, and return how many entries are in the subentity array
+	return JSON.parse(jsonStr).subEntities.length;
+}
+
+
 // Create the string for a single Glacier2 entity property
 //	property (object): Property from the blender json file
 // Returns: Property as a string
@@ -260,14 +339,17 @@ function getPropArrStr(properties, bBrackets, bCommaPrefix)
 
 
 // Create the string for a subentity to be added to a .TEMP.json file
+//	blendJson (object): Blender json
 //	obj (object): An entry from the blender json file
+//	config (object): Generator configuration
 //	tempMeta (object): The temp json's corresponding .meta.JSON as an object
 // Returns: Subentity as a string
-function getTempEntStr(obj, tempMeta)
+// TODO: Allow caller to control logical parent
+function getTempEntStr(blendJson, obj, config, tempMeta)
 {
 	return ",{"
 		// Logical parent
-		+ `"logicalParent":{"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":1,"exposedEntity":""},`
+		+ `"logicalParent":{"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":${config.defaultLogicalParentIndex},"exposedEntity":""},`
 		// Entity type
 		+ `"entityTypeResourceIndex":${getEntityTypeIndex(tempMeta, obj.tempType, obj.tempFlag)},`
 		// Properties
@@ -309,7 +391,7 @@ function getTempEntStr(obj, tempMeta)
 		// Post-init properties
 		+ `"postInitPropertyValues":`
 		+ '['
-			// Parent
+			// Physical parent
 			+ '{'
 				+ `"nPropertyID":"m_eidParent",`
 				+ `"value":`
@@ -317,7 +399,7 @@ function getTempEntStr(obj, tempMeta)
 					+ `"\$type":"SEntityTemplateReference",`
 					+ `"\$val":`
 					+ '{'
-						+ `"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":1,"exposedEntity":""`
+						+ `"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":${getPhysicalParentIndexFromBlenderName(blendJson, obj, config)},"exposedEntity":""`
 					+ '}'
 				+ '}'
 			+ '}'
@@ -331,14 +413,16 @@ function getTempEntStr(obj, tempMeta)
 
 
 // Create the string for a subentity to be added to a .TBLU.json file
+//	blendJson (object): Blender json
 //	obj (object): An entry from the blender json file
+//	config (object): Generator configuration
 // tbluMeta (object): The tblu json's corresponding .meta.JSON as an object
 // Returns: Subentity as a string
-function getTbluEntStr(obj, tbluMeta)
+function getTbluEntStr(blendJson, obj, config, tbluMeta)
 {
 	return ",{"
 		// Logical parent
-		+ `"logicalParent":{"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":1,"exposedEntity":""},`
+		+ `"logicalParent":{"entityID":18446744073709551615,"externalSceneIndex":-1,"entityIndex":${config.defaultLogicalParentIndex},"exposedEntity":""},`
 		// Entity type
 		+ `"entityTypeResourceIndex":${getEntityTypeIndex(tbluMeta, obj.tbluType, obj.tbluFlag)},`
 		// Entity Id
@@ -371,47 +455,73 @@ function main(argv)
 		return;
 	}
 	
+	console.log("Setting up...");
+	
 	// Declare constants
 	const PATH_JSON_CONFIG = argv[2];
 	const PATH_BLEND_DATA = __dirname + "/../blend/map.json";
+	const PATH_OG_JSON = __dirname + "/../og_json/";
 	
 	// Load the config file
-	var configJson = loadJsonIfExists(PATH_JSON_CONFIG, "Failed to load config file at " + PATH_JSON_CONFIG);
+	console.log("Loading config file");
+	var config = loadJsonIfExists(PATH_JSON_CONFIG, "Failed to load config file at " + PATH_JSON_CONFIG);
+	
+	// Load the original json files
+	console.log("Loading original temp");
+	var ogTemp = loadIfExists(PATH_OG_JSON + config.hashTemp + ".TEMP.JSON", "Failed to load original temp json at " + PATH_OG_JSON + config.hashTemp + ".TEMP.JSON");
+	console.log("Loading original tblu");
+	var ogTblu = loadIfExists(PATH_OG_JSON + config.hashTblu + ".TBLU.JSON", "Failed to load original tblu json at " + PATH_OG_JSON + config.hashTblu + ".TBLU.JSON");
+	
+	// Get the number of entities in the original brick
+	// TODO: Maybe don't serialize the entire TEMP file just to get the entity count and nothing else
+	console.log("Getting additional data from original files");
+	config.subentCount = getSubentCount(ogTemp);
 	
 	// Declare vars to hold output
+	console.log("Declaring variables for output");
 	var tempOut = "";
 	var tbluOut = "";
 	
 	// Load .meta.JSON files
-	var tempMeta = loadMetaJsonIfExists(configJson.path_rpkg_cli, __dirname + "/../og_json/" + configJson.hashTemp + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + configJson.hashTemp + ".TEMP.meta.JSON does not exist");
-	var tbluMeta = loadMetaJsonIfExists(configJson.path_rpkg_cli, __dirname + "/../og_json/" + configJson.hashTblu + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + configJson.hashTblu + ".TBLU.meta.JSON does not exist");
+	console.log("Loading original temp meta");
+	var tempMeta = loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../og_json/" + config.hashTemp + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + config.hashTemp + ".TEMP.meta.JSON does not exist");
+	console.log("Loading original tblu meta");
+	var tbluMeta = loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../og_json/" + config.hashTblu + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + config.hashTblu + ".TBLU.meta.JSON does not exist");
 
 	
 	// Open blender json file
-	var inputJson = loadJsonIfExists(PATH_BLEND_DATA, PATH_BLEND_DATA + " does not exist. Be sure you run the script in Blender first to generate it");
+	console.log("Loading Blender input");
+	var inputJson = loadJsonIfExists(PATH_BLEND_DATA, PATH_BLEND_DATA + " does not exist. Be sure you generate it in Blender first");
 	
 	// Iterate over every addition
+	console.log("Appending objects");
 	for (var [i, obj] of Object.entries(inputJson))
 	{
 		// Append output
-		tempOut += getTempEntStr(obj, tempMeta);
-		tbluOut += getTbluEntStr(obj, tbluMeta);
+		tempOut += getTempEntStr(inputJson, obj, config, tempMeta);
+		tbluOut += getTbluEntStr(inputJson, obj, config, tbluMeta);
 	}
 	
 	// Insert the output into the map's original json files and save as new json files
-	insertNewDataIntoJson(configJson.hashTemp, "TEMP", tempOut);
-	insertNewDataIntoJson(configJson.hashTblu, "TBLU", tbluOut);
+	console.log("Saving new temp json file");
+	insertNewDataIntoJson(config.hashTemp, "TEMP", ogTemp, tempOut, getTempInsertionIndex(ogTemp));
+	console.log("Saving new tblu json file");
+	insertNewDataIntoJson(config.hashTblu, "TBLU", ogTblu, tbluOut, getTbluInsertionIndex(ogTblu));
 	
 	// Save the new .meta.JSON files
-	saveNewMetaJson(configJson.hashTemp, "TEMP", tempMeta);
-	saveNewMetaJson(configJson.hashTblu, "TBLU", tbluMeta);
+	console.log("Saving new temp meta json file");
+	saveNewMetaJson(config.hashTemp, "TEMP", tempMeta);
+	console.log("Saving new tblu meta json file");
+	saveNewMetaJson(config.hashTblu, "TBLU", tbluMeta);
 	
 	// Serialize the json we just made into the files for a brick
-	brickToBIN1(configJson.path_ResourceTool + "/ResourceTool.exe", configJson.path_rpkg_cli, configJson.hashTemp, configJson.hashTblu);
+	console.log("Serializing files");
+	brickToBIN1(config.path_ResourceTool + "/ResourceTool.exe", config.path_rpkg_cli, config.hashTemp, config.hashTblu);
 	
 	// Generate an rpkg file via rpkg-cli
+	console.log("Packing data to rpkg");
 	child_process.execFileSync(
-		configJson.path_rpkg_cli,
+		config.path_rpkg_cli,
 		[
 			// Path to directory to generate rpkg from
 			"-generate_rpkg_from",
@@ -423,14 +533,16 @@ function main(argv)
 	);
 	
 	// Copy and rename the rpkg to HITMAN3/Runtime
+	console.log("Copying files into Hitman 3 runtime directory");
 	fs.copyFileSync(
 		// Path to file to copy; the rpkg file
 		__dirname + "/test.entity.rpkg",
 		// Path to copy file to
-		configJson.path_Runtime + '/' + configJson.rpkgName
+		config.path_Runtime + '/' + config.rpkgName
 	);
 	
 	// Delete the first copy of the rpkg file, it's not needed anymore
+	console.log("Deleting temporary files");
 	fs.unlinkSync(__dirname + "/test.entity.rpkg");
 	
 	console.log("Done");
