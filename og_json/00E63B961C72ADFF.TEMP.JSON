@@ -293,43 +293,7 @@
                 "exposedEntity": ""
             },
             "entityTypeResourceIndex": 11,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_mTransform",
-                    "value": {
-                        "$type": "SMatrix43",
-                        "$val": {
-                            "XAxis": {
-                                "x": 1,
-                                "y": 0,
-                                "z": 0
-                            },
-                            "YAxis": {
-                                "x": 0,
-                                "y": 1,
-                                "z": 0
-                            },
-                            "ZAxis": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "Trans": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 3
-                            }
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": 2612594937,
-                    "value": {
-                        "$type": "ZString",
-                        "$val": "Rocco where are you?"
-                    }
-                }
-            ],
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",
@@ -353,28 +317,8 @@
                 "entityIndex": 2,
                 "exposedEntity": ""
             },
-            "entityTypeResourceIndex": 14,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_RepositoryId",
-                    "value": {
-                        "$type": "ZGuid",
-                        "$val": {
-                            "_a": 1421584460,
-                            "_b": 26449,
-                            "_c": 17166,
-                            "_d": 180,
-                            "_e": 125,
-                            "_f": 228,
-                            "_g": 181,
-                            "_h": 221,
-                            "_i": 247,
-                            "_j": 168,
-                            "_k": 53
-                        }
-                    }
-                }
-            ],
+            "entityTypeResourceIndex": 11,
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",
@@ -398,70 +342,8 @@
                 "entityIndex": 2,
                 "exposedEntity": ""
             },
-            "entityTypeResourceIndex": 15,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_mTransform",
-                    "value": {
-                        "$type": "SMatrix43",
-                        "$val": {
-                            "XAxis": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "YAxis": {
-                                "x": 0,
-                                "y": 1,
-                                "z": 0
-                            },
-                            "ZAxis": {
-                                "x": -1,
-                                "y": 0,
-                                "z": 0
-                            },
-                            "Trans": {
-                                "x": 0,
-                                "y": -3,
-                                "z": 3.55
-                            }
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": "m_bSpawnOnStart",
-                    "value": {
-                        "$type": "bool",
-                        "$val": true
-                    }
-                },
-                {
-                    "nPropertyID": "m_bUsePlacementAttach",
-                    "value": {
-                        "$type": "bool",
-                        "$val": false
-                    }
-                },
-                {
-                    "nPropertyID": "m_ePhysicsMode",
-                    "value": {
-                        "$type": "ZItemSpawner.EPhysicsMode",
-                        "$val": "EPM_DYNAMIC"
-                    }
-                },
-                {
-                    "nPropertyID": "m_rMainItemKey",
-                    "value": {
-                        "$type": "SEntityTemplateReference",
-                        "$val": {
-                            "entityID": 18446744073709551615,
-                            "externalSceneIndex": -1,
-                            "entityIndex": 11,
-                            "exposedEntity": ""
-                        }
-                    }
-                }
-            ],
+            "entityTypeResourceIndex": 11,
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",
@@ -485,70 +367,8 @@
                 "entityIndex": 2,
                 "exposedEntity": ""
             },
-            "entityTypeResourceIndex": 15,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_mTransform",
-                    "value": {
-                        "$type": "SMatrix43",
-                        "$val": {
-                            "XAxis": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "YAxis": {
-                                "x": 0,
-                                "y": 1,
-                                "z": 0
-                            },
-                            "ZAxis": {
-                                "x": -1,
-                                "y": 0,
-                                "z": 0
-                            },
-                            "Trans": {
-                                "x": 1,
-                                "y": -3,
-                                "z": 3.55
-                            }
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": "m_bSpawnOnStart",
-                    "value": {
-                        "$type": "bool",
-                        "$val": true
-                    }
-                },
-                {
-                    "nPropertyID": "m_bUsePlacementAttach",
-                    "value": {
-                        "$type": "bool",
-                        "$val": false
-                    }
-                },
-                {
-                    "nPropertyID": "m_ePhysicsMode",
-                    "value": {
-                        "$type": "ZItemSpawner.EPhysicsMode",
-                        "$val": "EPM_DYNAMIC"
-                    }
-                },
-                {
-                    "nPropertyID": "m_rMainItemKey",
-                    "value": {
-                        "$type": "SEntityTemplateReference",
-                        "$val": {
-                            "entityID": 18446744073709551615,
-                            "externalSceneIndex": -1,
-                            "entityIndex": 11,
-                            "exposedEntity": ""
-                        }
-                    }
-                }
-            ],
+            "entityTypeResourceIndex": 11,
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",
@@ -572,70 +392,8 @@
                 "entityIndex": 2,
                 "exposedEntity": ""
             },
-            "entityTypeResourceIndex": 15,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_mTransform",
-                    "value": {
-                        "$type": "SMatrix43",
-                        "$val": {
-                            "XAxis": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "YAxis": {
-                                "x": 0,
-                                "y": 1,
-                                "z": 0
-                            },
-                            "ZAxis": {
-                                "x": -1,
-                                "y": 0,
-                                "z": 0
-                            },
-                            "Trans": {
-                                "x": 2,
-                                "y": -3,
-                                "z": 3.55
-                            }
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": "m_bSpawnOnStart",
-                    "value": {
-                        "$type": "bool",
-                        "$val": true
-                    }
-                },
-                {
-                    "nPropertyID": "m_bUsePlacementAttach",
-                    "value": {
-                        "$type": "bool",
-                        "$val": false
-                    }
-                },
-                {
-                    "nPropertyID": "m_ePhysicsMode",
-                    "value": {
-                        "$type": "ZItemSpawner.EPhysicsMode",
-                        "$val": "EPM_DYNAMIC"
-                    }
-                },
-                {
-                    "nPropertyID": "m_rMainItemKey",
-                    "value": {
-                        "$type": "SEntityTemplateReference",
-                        "$val": {
-                            "entityID": 18446744073709551615,
-                            "externalSceneIndex": -1,
-                            "entityIndex": 11,
-                            "exposedEntity": ""
-                        }
-                    }
-                }
-            ],
+            "entityTypeResourceIndex": 11,
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",
@@ -660,102 +418,7 @@
                 "exposedEntity": ""
             },
             "entityTypeResourceIndex": 11,
-            "propertyValues": [
-                {
-                    "nPropertyID": "m_mTransform",
-                    "value": {
-                        "$type": "SMatrix43",
-                        "$val": {
-                            "XAxis": {
-                                "x": -0.9992899894714356,
-                                "y": -0.037675000727176669,
-                                "z": 0
-                            },
-                            "YAxis": {
-                                "x": 0.037675000727176669,
-                                "y": -0.9992899894714356,
-                                "z": 0
-                            },
-                            "ZAxis": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 1
-                            },
-                            "Trans": {
-                                "x": 0,
-                                "y": 0,
-                                "z": 3
-                            }
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": 3117918624,
-                    "value": {
-                        "$type": "ZGuid",
-                        "$val": {
-                            "_a": 3171322326,
-                            "_b": 1972,
-                            "_c": 18263,
-                            "_d": 184,
-                            "_e": 238,
-                            "_f": 202,
-                            "_g": 193,
-                            "_h": 159,
-                            "_i": 28,
-                            "_j": 158,
-                            "_k": 22
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": "m_OutfitRepositoryID",
-                    "value": {
-                        "$type": "ZGuid",
-                        "$val": {
-                            "_a": 2458082990,
-                            "_b": 42635,
-                            "_c": 16575,
-                            "_d": 166,
-                            "_e": 24,
-                            "_f": 205,
-                            "_g": 71,
-                            "_h": 244,
-                            "_i": 167,
-                            "_j": 44,
-                            "_k": 105
-                        }
-                    }
-                },
-                {
-                    "nPropertyID": "m_nOutfitVariation",
-                    "value": {
-                        "$type": "int32",
-                        "$val": 0
-                    }
-                },
-                {
-                    "nPropertyID": "m_sActorName",
-                    "value": {
-                        "$type": "ZString",
-                        "$val": "Carl Ingram"
-                    }
-                },
-                {
-                    "nPropertyID": "m_nOutfitCharset",
-                    "value": {
-                        "$type": "int32",
-                        "$val": 0
-                    }
-                },
-                {
-                    "nPropertyID": "m_eRequiredVoiceVariation",
-                    "value": {
-                        "$type": "EActorVoiceVariation",
-                        "$val": "eAVV_INGRAM"
-                    }
-                }
-            ],
+            "propertyValues": [],
             "postInitPropertyValues": [
                 {
                     "nPropertyID": "m_eidParent",

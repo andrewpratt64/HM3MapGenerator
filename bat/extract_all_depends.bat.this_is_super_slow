@@ -1,0 +1,18 @@
+::Andrew Pratt 2021
+
+:: WARNING:	This will reset files in the dat folder, and re-extract EVERYTHING inside the portedhashes folder
+::			Depending on how many files are needed, this can take a VERY LONG TIME (possibly several hours!)
+
+@echo off
+
+:: Delete dat files so that they are recreated as their default state
+echo BAT: Deleting old data files
+del %~dp0\dat\extracted_depends.json
+del %~dp0\dat\recursive_extracted_depends.json
+
+:: Run extract_depends.js
+echo BAT: Extracting all depends
+node %~dp0\..\src\extract_depends.js %~dp0\..\config.json > %~dp0log\extract_all_depends.txt
+
+:: Wait for keypress before closing
+pause

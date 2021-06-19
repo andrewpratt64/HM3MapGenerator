@@ -1,0 +1,13 @@
+- Added "property helpers" to Blender addon. These provide an alternate interface for setting the value of a property
+- Added ability to disable setting an entities transform
+- Added ability to disable setting an entities physical parent
+- Entity type no longer has to be a hash
+- The default for an object's "TEMP type" in Blender is now "[modules:/zentity.class].pc_entitytype"
+- The default for an object's "TBLU type" in Blender is now "[modules:/zentity.class].pc_entityblueprint"
+- gen.js has been split into mutliple javascript files
+- compile.bat has been split into multiple batch files, and moved to a new "bat" directory
+- Dependencies the map has on files from chunks other than chunk0 and chunk1 that are missing can be automatically extracted via extract_new_depends.bat and extract_all_depends.bat(.this_is_super_slow)
+- Added a "dat" directory to hold misc. data
+- More entities have been "DISABLED_" in the og_json and reimplemented in Blender
+- Added support for SEntityTemplateReference properties
+- Added more example objects to house.blend

@@ -3,7 +3,10 @@
 	"path_rpkg_cli": "D:/Dev/hitman3/rpkg/rpkg-cli.exe",
 	"path_ResourceTool": "D:/Dev/hitman3/rpkg/ResourceTool",
 	
-	"rpkgName": "chunk1patch2.rpkg",
+	"maxVanillaPatch": 2,
+	
+	"rpkgName": "chunk1patch47.rpkg",
+	"rpkgPortedHashesName": "chunk1patch46.rpkg",
 	"hashTemp": "00E63B961C72ADFF",
 	"hashTblu": "002358C35FE1FD13",
 	
