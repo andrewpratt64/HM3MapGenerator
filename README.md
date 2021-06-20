@@ -79,6 +79,7 @@ EXAMPLE: "002358C35FE1FD13"
 
 ### Batch Files:
 - easy_build: Using this is recommended unless you have a reason not to. Builds map files from saved data from blender, creates an rpkg file, and copies it to Hitman 3's Runtime directory
+- easy_build_with_new_depends: Same as easy_build, but also extracts needed files to the "portedhashes" folder. (See extract_new_depends for more details)
 - extract_new_depends: Extracts any needed files to the "portedhashes" folder. Depending on your pc and how many files are exported, this can take a while (roughly 5-30 minutes typically)
 - extract_all_depends: Resets both extracted_depends.json and recursive_extracted_depends.json from the "dat" directory, deletes all files in the portedhashes directory, then extracts all needed files. THIS CAN TAKE A VERY LONG TIME. Remove ".this_is_super_slow" from filename to be able to use
 - gen: Generates files for the "base" folder
@@ -140,7 +141,7 @@ EXAMPLE: "002358C35FE1FD13"
 ┃ ┗📄README.md: Original readme for test.entity
 ┣📄config.json: Configuration for HM3MapGenerator
 ┣📄easy_build.bat - Shortcut: A shortcut to HM3MapGenerator/bat/easy_build.bat
-┣📄extract_new_depends.bat - Shortcut: A shortcut to HM3MapGenerator/bat/extract_new_depends.bat
+┣📄easy_build_with_new_depends.bat - Shortcut: A shortcut to HM3MapGenerator/bat/easy_build_with_new_depends.bat
 ┣📄LICENSE.txt: License information for HM3MapGenerator
 ┗📄README.md: Information and directions for HM3MapGenerator
 ```

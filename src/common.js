@@ -23,6 +23,15 @@ function isIOIHash(str)
 }
 
 
+// Gets the hash depends from a "hash_reference_data" list in a meta file as a string for rpkg tool's "-filter" argument
+//	depends (array): The "hash_reference_data" value from a .meta.JSON
+// Returns: String listing all hashes, seperated by commas
+function getHashDependsAsSingleString(depends)
+{
+	return depends.map(depend => depend.hash).join();
+}
+
+
 // Test if a given rpkg filename is NOT from a mod
 //	config (object): Generator configuration
 //	fileName (string): Name of rpkg file to test
@@ -548,6 +557,7 @@ function getTbluEntStr(pathRpkgCli, blendJson, obj, config, tbluMeta)
 // Stuff to export
 exports.getArbitraryEntId = getArbitraryEntId;
 exports.isIOIHash = isIOIHash;
+exports.getHashDependsAsSingleString  = getHashDependsAsSingleString;
 exports.isVanillaRpkg = isVanillaRpkg;
 exports.loadIfExists = loadIfExists;
 exports.loadJsonIfExists = loadJsonIfExists;

@@ -225,9 +225,9 @@ function main(argv)
 	
 	// Load .meta.JSON files
 	console.log("Loading original temp meta");
-	var tempMeta = common.loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../test.entity-main/test.entity/TEMP/" + config.hashTemp + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + config.hashTemp + ".TEMP.meta.JSON does not exist");
+	var tempMeta = common.loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../test.entity-main/test.entity/base/TEMP/" + config.hashTemp + ".TEMP.meta.JSON", "Failed to load TEMP depends; " + config.hashTemp + ".TEMP.meta.JSON does not exist");
 	console.log("Loading original tblu meta"); 
-	var tbluMeta = common.loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../test.entity-main/test.entity/TBLU/" + config.hashTblu + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + config.hashTblu + ".TBLU.meta.JSON does not exist");
+	var tbluMeta = common.loadMetaJsonIfExists(config.path_rpkg_cli, __dirname + "/../test.entity-main/test.entity/base/TBLU/" + config.hashTblu + ".TBLU.meta.JSON", "Failed to load TBLU depends; " + config.hashTblu + ".TBLU.meta.JSON does not exist");
 	
 	// Extract depends
 	console.log("Extracting depends for TEMP");
@@ -255,7 +255,7 @@ catch (e)
 	
 	if (e)
 	{
-		if ("stack" in e)
+		if (e.hasOwnProperty("stack"))
 			console.log("\nSTACK:\n" + e.stack);
 		else
 			console.log("\nNo stack available for printing");
