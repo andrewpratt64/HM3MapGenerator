@@ -73,7 +73,7 @@ function extractDepends(config, metaJson, bRecurse)
 		
 		console.log("   >>Found " + dependsMatch[1] + " from chunk" + dependsMatch[2] + (dependsMatch[3] != undefined ? "patch" + dependsMatch[3] : ''));
 		// Get this hash entry, adding it if it dosen't already exist
-		var hashInfo = emplace(dependsInfo, dependsMatch[1], {chunk: "-", patch: "-", type: dependsMatch[4]});
+		var hashInfo = common.emplace(dependsInfo, dependsMatch[1], {chunk: "-", patch: "-", type: dependsMatch[4]});
 		
 		// Update this hash entry, if it has a higher patch, or a higher chunk (in that order)
 		if (hashInfo.chunk < dependsMatch[2])
@@ -152,7 +152,7 @@ function extractDepends(config, metaJson, bRecurse)
 				
 				console.log("   Loading meta json");
 				// Load the new .meta.json
-				var newMetaJson = loadMetaJsonIfExists(
+				var newMetaJson = common.loadMetaJsonIfExists(
 					config.path_rpkg_cli,
 					outPath + '/' + fileName + ".meta.JSON",
 					"Failed to load meta for extracted file " + fileName

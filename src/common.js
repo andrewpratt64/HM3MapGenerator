@@ -14,6 +14,20 @@ function getArbitraryEntId()
 	return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 }
 
+
+// Emplace a value in an object
+//	obj (object): Object to emplace value in
+//	key (string): Key to emplace at
+//	val (any): Value to set obj[key] to if it dosen't exist. Is an empty object {} by default
+// Returns: obj[key]
+function emplace(obj, key, val={})
+{
+	if (!(key in obj))
+		obj[key] = val;
+	return obj[key];
+}
+
+
 // Test if a given string is an IOI hash
 //	str (string): String to test
 // Returns: True if str is an IOI hash
@@ -556,6 +570,7 @@ function getTbluEntStr(pathRpkgCli, blendJson, obj, config, tbluMeta)
 
 // Stuff to export
 exports.getArbitraryEntId = getArbitraryEntId;
+exports.emplace = emplace;
 exports.isIOIHash = isIOIHash;
 exports.getHashDependsAsSingleString  = getHashDependsAsSingleString;
 exports.isVanillaRpkg = isVanillaRpkg;
